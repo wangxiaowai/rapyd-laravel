@@ -243,6 +243,14 @@ function Uploader($trigger, opts) {
 		return !$.isEmptyObject(opts.compress) && opts.type == 'image' && file.name.indexOf('has-compress.') == -1
 	};
 
+
+	var mime_types = '{mime_types: [{title: opts.typeTitle, extensions: opts.ext}]}'
+
+	if(navigator.userAgent.indexOf('Android') > -1 || navigator.userAgent.indexOf('Linux') > -1){
+		if(window.navigator.userAgent.toLowerCase().match(/MicroMessenger/i) == 'micromessenger'){
+			mime_types = ''
+		}
+	}
 	// 初始化七牛的 uploader & 真正的上传过程
 	this.initQiNiuUploader = function () {
 		var qn = new QiniuJsSDK();
@@ -251,12 +259,7 @@ function Uploader($trigger, opts) {
 			browse_button: that.browseBtnId,       //上传选择的点选按钮，**必需**
 			multi_selection: true, //note: 支持多选的时候，会导致无法使用摄像头直接拍.
 			runtimes: 'html5,flash,html4',    //上传模式,依次退化
-			filters: {
-				mime_types: [{
-					title: opts.typeTitle,
-					extensions: opts.ext
-				}]
-			},
+			filters: mime_types,
 			uptoken_url: opts.upUrl,            //Ajax请求upToken的Url，**强烈建议设置**（服务端提供）
 			downtoken_url: opts.downUrl,
 			save_key: true,   // 默认 false。若在服务端生成uptoken的上传策略中指定了 `sava_key`，则开启，SDK在前端将不对key进行任何处理
